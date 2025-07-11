@@ -1,0 +1,236 @@
+.comparateur-container {
+  min-height: 100vh;
+  padding-bottom: 40px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  margin-bottom: 24px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.content {
+  flex: 1;
+  padding: 0 16px;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.type-container {
+  padding: 20px 0;
+}
+
+.type-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.type-card {
+  width: 47%;
+  padding: 16px;
+  border-radius: 12px;
+  border-width: 1px;
+  border-style: solid;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  margin-bottom: 8px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.type-text {
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.selection-container {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.selection-button {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border-width: 1px;
+  border-style: solid;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  background: none;
+  transition: background 0.2s, color 0.2s;
+}
+
+.selection-text {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.results-container {
+  margin-bottom: 20px;
+}
+
+.comparison-grid, .benchmark-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.comparison-card, .benchmark-card {
+  border-radius: 12px;
+  border-width: 1px;
+  border-style: solid;
+  padding: 16px;
+}
+
+.comparison-title, .benchmark-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.comparison-values, .benchmark-values {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.value-container, .benchmark-value {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.value-label, .benchmark-label {
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.value-text, .benchmark-number {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.difference-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.difference-badge {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 12px;
+  gap: 4px;
+}
+
+.difference-text {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.percentage-text {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.benchmark-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.benchmark-badge {
+  padding: 6px 12px;
+  border-radius: 16px;
+}
+
+.benchmark-badge-text {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.summary-container {
+  border-radius: 16px;
+  border-width: 1px;
+  border-style: solid;
+  padding: 20px;
+  margin-bottom: 80px;
+}
+
+.summary-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.summary-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.summary-text {
+  font-size: 14px;
+  flex: 1;
+}
+
+@media (max-width: 700px) {
+  .comparateur-container {
+    padding: 8px;
+  }
+  .header {
+    padding: 12px 8px;
+  }
+  .content {
+    padding: 0 4px;
+  }
+  .type-card {
+    width: 100%;
+  }
+  .selection-container {
+    flex-direction: column;
+    gap: 8px;
+  }
+} 

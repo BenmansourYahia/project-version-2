@@ -18,6 +18,7 @@ export default function KPICard({ kpi }) {
   const isPositive = variation > 0;
 
   const formatValue = (value) => {
+    if (value === null || value === undefined || isNaN(value)) return '-';
     if (kpi.unit === '€') {
       return `${Math.round(value).toLocaleString('fr-FR')}€`;
     }

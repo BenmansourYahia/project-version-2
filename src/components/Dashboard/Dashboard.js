@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTheme } from '../../hooks/useTheme';
-import { mockKPIs, brands, salesEvolutionData, mockStores } from '../../data/mockData';
+import { mockKPIs, brands, salesEvolutionData, mockStores, mockPerformances } from '../../data/mockData';
 import KPICard from '../KPICard';
 import ChartCardRecharts from '../ChartCardRecharts';
 import FilterModal from '../FilterModal';
@@ -138,6 +138,26 @@ export default function Dashboard() {
   const kpiSum = key => kpiData.reduce((sum, d) => sum + (d[key] || 0), 0);
   const kpiAvg = key => kpiData.length ? kpiSum(key) / kpiData.length : 0;
 
+  // Agrégation des KPIs avancés (prix moyen, débit moyen, taux transformation, quantité vendue)
+  let prixMoyen = null, debitMoyen = null, tauxTransformation = null, quantiteVendue = null;
+  if (selectedStore) {
+    // On cherche la perf du magasin sélectionné dans mockPerformances
+    const perfAvancee = mockPerformances.find(p => p.magasin === selectedStore.code);
+    prixMoyen = perfAvancee ? perfAvancee.prixMoyen : null;
+    debitMoyen = perfAvancee ? perfAvancee.debitMoyen : null;
+    tauxTransformation = perfAvancee ? perfAvancee.tauxTransformation : null;
+    quantiteVendue = perfAvancee ? perfAvancee.quantiteVendue : null;
+  } else {
+    // Moyenne sur tous les magasins filtrés
+    const perfs = mockPerformances.filter(p => filteredStores.some(s => s.code === p.magasin));
+    if (perfs.length > 0) {
+      prixMoyen = perfs.reduce((sum, p) => sum + (p.prixMoyen || 0), 0) / perfs.length;
+      debitMoyen = perfs.reduce((sum, p) => sum + (p.debitMoyen || 0), 0) / perfs.length;
+      tauxTransformation = perfs.reduce((sum, p) => sum + (p.tauxTransformation || 0), 0) / perfs.length;
+      quantiteVendue = perfs.reduce((sum, p) => sum + (p.quantiteVendue || 0), 0);
+    }
+  }
+
   const storeKPIs = [
     {
       id: '1',
@@ -175,6 +195,42 @@ export default function Dashboard() {
       icon: 'Award',
       color: '#EF4444',
       objective: 100
+    },
+    {
+      id: '5',
+      name: 'Prix moyen',
+      value: typeof prixMoyen === 'number' && !isNaN(prixMoyen) ? prixMoyen : null,
+      previousValue: typeof prixMoyen === 'number' && !isNaN(prixMoyen) ? prixMoyen * 0.95 : null,
+      unit: '€',
+      icon: 'Tag',
+      color: '#6366f1'
+    },
+    {
+      id: '6',
+      name: 'Débit moyen',
+      value: typeof debitMoyen === 'number' && !isNaN(debitMoyen) ? debitMoyen : null,
+      previousValue: typeof debitMoyen === 'number' && !isNaN(debitMoyen) ? debitMoyen * 0.95 : null,
+      unit: '',
+      icon: 'Zap',
+      color: '#0ea5e9'
+    },
+    {
+      id: '7',
+      name: 'Taux de transformation',
+      value: typeof tauxTransformation === 'number' && !isNaN(tauxTransformation) ? tauxTransformation : null,
+      previousValue: typeof tauxTransformation === 'number' && !isNaN(tauxTransformation) ? tauxTransformation * 0.95 : null,
+      unit: '%',
+      icon: 'Target',
+      color: '#F59E0B'
+    },
+    {
+      id: '8',
+      name: 'Quantité vendue',
+      value: typeof quantiteVendue === 'number' && !isNaN(quantiteVendue) ? quantiteVendue : null,
+      previousValue: typeof quantiteVendue === 'number' && !isNaN(quantiteVendue) ? quantiteVendue * 0.95 : null,
+      unit: '',
+      icon: 'Package',
+      color: '#10B981'
     }
   ];
 

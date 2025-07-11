@@ -325,7 +325,7 @@ export default function ChartCard({
   };
 
   return (
-    <div style={{ borderRadius: 16, border: `1px solid ${theme.colors.border}`, padding: 16, margin: '8px 16px', background: theme.colors.surface, maxWidth: 900, width: '100%' }}>
+    <div className="card-3d" style={{ borderRadius: 16, border: `1px solid ${theme.colors.border}`, padding: 16, margin: '8px 16px', background: theme.colors.surface, maxWidth: 900, width: '100%' }}>
       <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 16, textAlign: 'center', color: theme.colors.text }}>{title}</div>
       {type === 'line' && renderLineChart()}
       {type === 'bar' && renderBarChart && renderBarChart()}

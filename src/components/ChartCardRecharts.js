@@ -7,16 +7,16 @@ function CustomTooltip({ active, payload, label }) {
     return (
       <div style={{
         background: '#fff',
-        border: '1px solid #1E5AA8',
+        border: '1px solid #6c4ccf',
         borderRadius: 8,
         padding: 8,
-        color: '#1E5AA8',
+        color: '#6c4ccf',
         fontWeight: 600,
         minWidth: 80,
         textAlign: 'center',
-        boxShadow: '0 2px 8px rgba(30,90,168,0.08)'
+        boxShadow: '0 2px 8px #6c4ccf22'
       }}>
-        <div style={{ color: '#1E5AA8', marginBottom: 4 }}>{label}</div>
+        <div style={{ color: '#6c4ccf', marginBottom: 4 }}>{label}</div>
         <div style={{ color: '#222', fontWeight: 700, fontSize: 16 }}>{payload[0].value.toLocaleString('fr-FR')}</div>
       </div>
     );

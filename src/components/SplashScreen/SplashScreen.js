@@ -22,7 +22,7 @@ export default function SplashScreen({ onFinish }) {
   if (!visible) return null;
 
   const sofisoftColors = {
-    primary: '#1E5AA8',
+    primary: '#6c4ccf',
     secondary: '#E53E3E',
     background: '#FFFFFF',
     accent: '#2B6CB0',

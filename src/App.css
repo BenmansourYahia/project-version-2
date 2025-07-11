@@ -1,3 +1,11 @@
+body {
+  font-family: "Nunito", sans-serif;
+  background: #fff;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
 .App {
   text-align: center;
 }
@@ -35,4 +43,24 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.card-3d {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(76, 60, 133, 0.18), 0 1.5px 4px #6c4ccf33;
+}
+.card-3d:hover {
+}
+
+.card-3d-animated {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(76, 60, 133, 0.18), 0 1.5px 4px #6c4ccf33;
+  transition: transform 0.18s cubic-bezier(.4,2,.6,1), box-shadow 0.18s;
+  will-change: transform, box-shadow;
+}
+.card-3d-animated:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 16px 32px rgba(76, 60, 133, 0.22), 0 3px 12px #6c4ccf44;
 }

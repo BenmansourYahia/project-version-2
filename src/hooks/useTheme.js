@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 const lightTheme = {
   colors: {
-    primary: '#3B82F6',
+    primary: '#6c4ccf',
     secondary: '#8B5CF6',
     background: '#FFFFFF',
     surface: '#F8FAFC',
@@ -12,7 +12,7 @@ const lightTheme = {
     success: '#10B981',
     warning: '#F59E0B',
     error: '#EF4444',
-    info: '#3B82F6'
+    info: '#493971'
   },
   spacing: {
     xs: 4,
@@ -30,7 +30,7 @@ const lightTheme = {
 
 const darkTheme = {
   colors: {
-    primary: '#60A5FA',
+    primary: '#6c4ccf',
     secondary: '#A78BFA',
     background: '#111827',
     surface: '#1F2937',
@@ -40,7 +40,7 @@ const darkTheme = {
     success: '#34D399',
     warning: '#FBBF24',
     error: '#F87171',
-    info: '#60A5FA'
+    info: '#493971'
   },
   spacing: {
     xs: 4,

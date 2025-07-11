@@ -28,7 +28,7 @@ export default function KPICard({ kpi }) {
   };
 
   return (
-    <div style={{
+    <div className="card-3d-animated" style={{
       borderWidth: 1,
       borderStyle: 'solid',
       borderColor: theme.colors.border,

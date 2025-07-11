@@ -66,7 +66,7 @@ export const mockKPIs = [
     previousValue: 340,
     unit: '',
     icon: 'Receipt',
-    color: '#3B82F6'
+    color: '#6c4ccf'
   },
   {
     id: '3',
@@ -206,7 +206,7 @@ export const storePerformanceData = [
 ];
 
 export const brandDistributionData = [
-  { name: 'Brand A', value: 45, color: '#3B82F6' },
+  { name: 'Brand A', value: 45, color: '#6c4ccf' },
   { name: 'Brand B', value: 30, color: '#10B981' },
   { name: 'Brand C', value: 15, color: '#F59E0B' },
   { name: 'Brand D', value: 10, color: '#EF4444' },

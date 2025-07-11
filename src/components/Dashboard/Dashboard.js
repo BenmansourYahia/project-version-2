@@ -153,7 +153,7 @@ export default function Dashboard() {
       previousValue: kpiSum('tickets') - 10,
       unit: '',
       icon: 'Receipt',
-      color: '#3B82F6'
+      color: '#6c4ccf'
     },
     {
       id: '3',
@@ -292,14 +292,14 @@ export default function Dashboard() {
           <div className="dashboard-summary-row" style={{ display: 'flex', flexDirection: 'column', gap: 24, alignItems: 'center' }}>
             {/* Meilleur magasin */}
             {bestStore && (
-              <div style={{ minWidth: 220, textAlign: 'center', background: '#E6FFF2', borderRadius: 12, padding: 18, margin: 0, boxShadow: '0 2px 8px #10B98122' }}>
+              <div className="card-3d-animated" style={{ minWidth: 220, textAlign: 'center', background: '#E6FFF2', borderRadius: 12, padding: 18, margin: 0, boxShadow: '0 2px 8px #10B98122' }}>
                 <div style={{ color: theme.colors.success, fontWeight: 700, fontSize: 18, marginBottom: 4 }}>Meilleur magasin</div>
                 <div style={{ color: theme.colors.text, fontWeight: 600, marginBottom: 2 }}>{bestStore.store.name}</div>
                 <div style={{ color: theme.colors.success, fontWeight: 700, fontSize: 22 }}>{bestStore.total.toLocaleString('fr-FR')} €</div>
               </div>
             )}
             {/* Résumé principal */}
-            <div style={{ minWidth: 220, textAlign: 'center', background: '#F8FAFC', borderRadius: 12, padding: 18, margin: 0, boxShadow: '0 2px 8px #64748B22' }}>
+            <div className="card-3d-animated" style={{ minWidth: 220, textAlign: 'center', background: '#F8FAFC', borderRadius: 12, padding: 18, margin: 0, boxShadow: '0 2px 8px #6c4ccf22' }}>
               <div style={{ color: theme.colors.textSecondary, fontWeight: 600, marginBottom: 4 }}>Total des ventes</div>
               <div style={{ color: theme.colors.success, fontWeight: 700, fontSize: 20 }}>{resume.totalVentes.toLocaleString('fr-FR')} €</div>
               <div style={{ color: theme.colors.textSecondary, marginTop: 8, fontWeight: 600 }}>Nombre de tickets</div>
@@ -309,7 +309,7 @@ export default function Dashboard() {
             </div>
             {/* Moins bon magasin */}
             {worstStore && (
-              <div style={{ minWidth: 220, textAlign: 'center', background: '#FFF0F0', borderRadius: 12, padding: 18, margin: 0, boxShadow: '0 2px 8px #EF444422' }}>
+              <div className="card-3d-animated" style={{ minWidth: 220, textAlign: 'center', background: '#FFF0F0', borderRadius: 12, padding: 18, margin: 0, boxShadow: '0 2px 8px #EF444422' }}>
                 <div style={{ color: theme.colors.error, fontWeight: 700, fontSize: 18, marginBottom: 4 }}>Moins bon magasin</div>
                 <div style={{ color: theme.colors.text, fontWeight: 600, marginBottom: 2 }}>{worstStore.store.name}</div>
                 <div style={{ color: theme.colors.error, fontWeight: 700, fontSize: 22 }}>{worstStore.total.toLocaleString('fr-FR')} €</div>

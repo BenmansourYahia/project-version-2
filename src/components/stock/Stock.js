@@ -91,7 +91,7 @@ export default function Stock() {
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginTop: 24 }}>
           {filteredStock.map(item => (
-            <div key={item.id} style={{ border: `1px solid ${theme.colors.border}`, borderRadius: 12, background: theme.colors.surface, padding: 16 }}>
+            <div key={item.id} className="card-3d" style={{ border: `1px solid ${theme.colors.border}`, borderRadius: 12, background: theme.colors.surface, padding: 16 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
                   <div style={{ color: theme.colors.text, fontWeight: 600 }}>{item.designation}</div>

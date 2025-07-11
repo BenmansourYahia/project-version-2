@@ -28,7 +28,7 @@ export default function Comparateur() {
     const percentageChange = value2 !== 0 ? ((difference / value2) * 100) : 0;
     const isPositive = difference > 0;
     return (
-      <div className="comparison-card" style={{ background: theme.colors.surface, borderColor: theme.colors.border }}>
+      <div className="comparison-card card-3d" style={{ background: theme.colors.surface, borderColor: theme.colors.border }}>
         <div className="comparison-title" style={{ color: theme.colors.text }}>{title}</div>
         <div className="comparison-values">
           <div className="value-container">
@@ -65,7 +65,7 @@ export default function Comparateur() {
     const percentageChange = average !== 0 ? ((difference / average) * 100) : 0;
     const isAboveAverage = difference > 0;
     return (
-      <div className="benchmark-card" style={{ background: theme.colors.surface, borderColor: theme.colors.border }}>
+      <div className="benchmark-card card-3d" style={{ background: theme.colors.surface, borderColor: theme.colors.border }}>
         <div className="benchmark-title" style={{ color: theme.colors.text }}>{title}</div>
         <div className="benchmark-values">
           <div className="benchmark-value">

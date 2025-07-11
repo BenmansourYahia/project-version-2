@@ -4,6 +4,8 @@ import { mockKPIs, brands, salesEvolutionData, mockStores } from '../../data/moc
 import KPICard from '../KPICard';
 import ChartCardRecharts from '../ChartCardRecharts';
 import FilterModal from '../FilterModal';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const monthNames = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
 const trimesters = ['Trim 1', 'Trim 2', 'Trim 3', 'Trim 4'];
@@ -176,10 +178,50 @@ export default function Dashboard() {
     }
   ];
 
+  // Fonction d'export PDF
+  const handleExportPDF = async () => {
+    const input = document.getElementById('dashboard-report');
+    if (!input) return;
+    const canvas = await html2canvas(input, { scale: 2 });
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const imgWidth = pageWidth - 40;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    pdf.addImage(imgData, 'PNG', 20, 20, imgWidth, imgHeight);
+    let fileName = 'rapport-dashboard.pdf';
+    if (selectedStore) fileName = `rapport-${selectedStore.name.replace(/\s+/g, '_')}.pdf`;
+    pdf.save(fileName);
+  };
+
   return (
     <div style={{ background: theme.colors.background, minHeight: '100vh', paddingBottom: 40 }}>
       <div style={{ maxWidth: 900, margin: '0 auto', padding: 24 }}>
         <h1 style={{ color: theme.colors.primary, textAlign: 'center', marginBottom: 24 }}>Dashboard</h1>
+        {/* Bouton Export PDF */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 12 }}>
+          <button
+            onClick={handleExportPDF}
+            style={{
+              background: 'linear-gradient(90deg, #6c4ccf 60%, #8B5CF6 100%)',
+              color: '#fff',
+              border: 'none',
+              borderRadius: 8,
+              padding: '8px 22px',
+              fontWeight: 600,
+              fontSize: 16,
+              cursor: 'pointer',
+              boxShadow: '0 2px 8px #6c4ccf22',
+              letterSpacing: 1,
+              marginBottom: 8
+            }}
+          >
+            Exporter en PDF
+          </button>
+        </div>
+        {/* Contenu à exporter */}
+        <div id="dashboard-report">
         {/* Sélecteur de magasin, reset, période et trimestre */}
         <div style={{ display: 'flex', gap: 8, marginBottom: 16, alignItems: 'center' }}>
           <select
@@ -325,6 +367,7 @@ export default function Dashboard() {
           selectedOptions={selectedBrands}
           onApply={setSelectedBrands}
         />
+        </div>
       </div>
     </div>
   );

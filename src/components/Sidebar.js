@@ -11,7 +11,7 @@ const navItems = [
   { to: '/profil', label: 'Profil', icon: <User size={22} /> },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ onLogout }) {
   return (
     <aside className="sidebar">
       <div className="sidebar-logo">
@@ -32,6 +32,32 @@ export default function Sidebar() {
           </NavLink>
         ))}
       </nav>
+      {/* Bouton Déconnexion en bas */}
+      {onLogout && (
+        <button
+          onClick={onLogout}
+          style={{
+            marginTop: 'auto',
+            width: '90%',
+            marginLeft: '5%',
+            marginBottom: 24,
+            background: 'linear-gradient(90deg, #6c4ccf 60%, #8B5CF6 100%)',
+            color: '#fff',
+            border: 'none',
+            borderRadius: 8,
+            padding: '10px 0',
+            fontWeight: 600,
+            fontSize: 16,
+            cursor: 'pointer',
+            boxShadow: '0 2px 8px #6c4ccf22',
+            display: 'block',
+            letterSpacing: 1,
+            transition: 'background 0.2s',
+          }}
+        >
+          Déconnexion
+        </button>
+      )}
     </aside>
   );
 } 

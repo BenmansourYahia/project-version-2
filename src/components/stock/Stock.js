@@ -141,6 +141,7 @@ export default function Stock() {
               <div style={{ color: theme.colors.textSecondary, fontSize: 12, marginTop: 8 }}>
                 Mis à jour: {new Date(item.lastUpdate).toLocaleString('fr-FR')}
                 {item.storeName && <span> - {item.storeName}</span>}
+                }
               </div>
             </div>
           ))}

@@ -63,7 +63,9 @@ export default function Login({ onLogin }) {
           <input type="email" placeholder="Email" value={signupEmail} onChange={e => setSignupEmail(e.target.value)} />
           <input type="password" placeholder="Mot de passe" value={signupPassword} onChange={e => setSignupPassword(e.target.value)} />
           {signupError && <div style={{ color: '#EF4444', fontWeight: 500, fontSize: 14 }}>{signupError}</div>}
+          }
           {signupSuccess && <div style={{ color: '#10B981', fontWeight: 500, fontSize: 14 }}>{signupSuccess}</div>}
+          }
           <button type="submit">S'inscrire</button>
         </form>
       </div>
@@ -79,6 +81,7 @@ export default function Login({ onLogin }) {
             Utilisez: admin@sofisoft.com / admin ou jean.dupont@store.com / password
           </div>
           {loginError && <div style={{ color: '#EF4444', fontWeight: 500, fontSize: 14 }}>{loginError}</div>}
+          }
           <button type="submit">Se connecter</button>
         </form>
       </div>

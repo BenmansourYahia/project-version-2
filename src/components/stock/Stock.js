@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
+import { useEffect } from 'react';
 import { useTheme } from '../../hooks/useTheme';
-import { mockStock } from '../../data/mockData';
+import apiService from '../../services/api';
 import FilterModal from '../FilterModal';
 
 export default function Stock() {
   const { theme } = useTheme();
+  const [stocks, setStocks] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [showFilterModal, setShowFilterModal] = useState(false);
@@ -16,7 +19,23 @@ export default function Stock() {
     { value: 'stock_faible', label: 'Stock faible' },
   ];
 
-  const filteredStock = mockStock.filter(item => {
+  useEffect(() => {
+    loadStocks();
+  }, []);
+
+  const loadStocks = async () => {
+    try {
+      setLoading(true);
+      const stocksData = await apiService.getStocks();
+      setStocks(stocksData);
+    } catch (error) {
+      console.error('Error loading stocks:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredStock = stocks.filter(item => {
     const matchesSearch = item.designation.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.code.toLowerCase().includes(searchQuery.toLowerCase());
     let matchesFilter = true;
@@ -35,6 +54,14 @@ export default function Stock() {
     }
     return matchesSearch && matchesFilter;
   });
+
+  if (loading) {
+    return (
+      <div style={{ background: theme.colors.background, minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <div style={{ color: theme.colors.text, fontSize: 18 }}>Chargement...</div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ background: theme.colors.background, minHeight: '100vh', paddingBottom: 40 }}>
@@ -111,7 +138,10 @@ export default function Stock() {
                   <div style={{ color: theme.colors.text }}>{item.seuil}</div>
                 </div>
               </div>
-              <div style={{ color: theme.colors.textSecondary, fontSize: 12, marginTop: 8 }}>Mis à jour: {new Date(item.lastUpdate).toLocaleString('fr-FR')}</div>
+              <div style={{ color: theme.colors.textSecondary, fontSize: 12, marginTop: 8 }}>
+                Mis à jour: {new Date(item.lastUpdate).toLocaleString('fr-FR')}
+                {item.storeName && <span> - {item.storeName}</span>}
+              </div>
             </div>
           ))}
         </div>

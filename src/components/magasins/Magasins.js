@@ -1,24 +1,59 @@
 import React, { useState } from 'react';
+import { useEffect } from 'react';
 import { useTheme } from '../../hooks/useTheme';
-import { mockStores, brands, regions } from '../../data/mockData';
+import apiService from '../../services/api';
 import SearchBar from '../SearchBar';
 import FilterModal from '../FilterModal';
 
 export default function Magasins() {
   const { theme } = useTheme();
+  const [stores, setStores] = useState([]);
+  const [brands, setBrands] = useState([]);
+  const [regions, setRegions] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [selectedRegions, setSelectedRegions] = useState([]);
   const [showBrandFilter, setShowBrandFilter] = useState(false);
   const [showRegionFilter, setShowRegionFilter] = useState(false);
 
-  const filteredStores = mockStores.filter(store => {
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      const [storesData, brandsData, regionsData] = await Promise.all([
+        apiService.getStores(),
+        apiService.getBrands(),
+        apiService.getRegions()
+      ]);
+      setStores(storesData);
+      setBrands(brandsData);
+      setRegions(regionsData);
+    } catch (error) {
+      console.error('Error loading data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredStores = stores.filter(store => {
     const matchesSearch = store.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       store.code.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesBrand = selectedBrands.length === 0 || selectedBrands.includes(store.brand);
     const matchesRegion = selectedRegions.length === 0 || selectedRegions.some(region => store.address.includes(region));
     return matchesSearch && matchesBrand && matchesRegion;
   });
+
+  if (loading) {
+    return (
+      <div style={{ background: theme.colors.background, minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <div style={{ color: theme.colors.text, fontSize: 18 }}>Chargement...</div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ background: theme.colors.background, minHeight: '100vh', paddingBottom: 40 }}>
@@ -76,18 +111,18 @@ export default function Magasins() {
               <div style={{ display: 'flex', gap: 24, margin: '8px 0' }}>
                 <div>
                   <div style={{ color: theme.colors.textSecondary, fontSize: 12 }}>CA</div>
-                  <div style={{ color: theme.colors.text }}>{store.performance.ca.toLocaleString('fr-FR')}€</div>
+                  <div style={{ color: theme.colors.text }}>{store.performance?.ca ? Number(store.performance.ca).toLocaleString('fr-FR') : '0'}€</div>
                 </div>
                 <div>
                   <div style={{ color: theme.colors.textSecondary, fontSize: 12 }}>Tickets</div>
-                  <div style={{ color: theme.colors.text }}>{store.performance.tickets}</div>
+                  <div style={{ color: theme.colors.text }}>{store.performance?.tickets || 0}</div>
                 </div>
                 <div>
                   <div style={{ color: theme.colors.textSecondary, fontSize: 12 }}>Objectif</div>
-                  <div style={{ color: store.performance.objectifAtteint > 80 ? theme.colors.success : theme.colors.warning }}>{store.performance.objectifAtteint.toFixed(1)}%</div>
+                  <div style={{ color: (store.performance?.objectifAtteint || 0) > 80 ? theme.colors.success : theme.colors.warning }}>{(store.performance?.objectifAtteint || 0).toFixed(1)}%</div>
                 </div>
               </div>
-              <div style={{ color: theme.colors.textSecondary, fontSize: 12, marginTop: 8 }}>Mis à jour: {new Date(store.lastUpdate).toLocaleTimeString('fr-FR')}</div>
+              <div style={{ color: theme.colors.textSecondary, fontSize: 12, marginTop: 8 }}>Mis à jour: {new Date(store.lastUpdate).toLocaleString('fr-FR')}</div>
             </div>
           ))}
         </div>

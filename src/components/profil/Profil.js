@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { useEffect } from 'react';
 import { useTheme } from '../../hooks/useTheme';
-import { mockUser } from '../../data/mockData';
+import apiService from '../../services/api';
 
 // Icônes SVG simples inline pour email, téléphone, magasin, badge, sécurité, etc.
 const MailIcon = () => (
@@ -24,17 +25,46 @@ const LockIcon = () => (
 
 export default function Profil() {
   const { theme, isDark, toggleTheme } = useTheme();
-  const [user] = useState({
-    ...mockUser,
-    description: "Manager passionné par la performance des équipes et l'innovation retail.",
-    inscription: '2022-03-15',
-    avatar: null // ou une URL d'image si dispo
-  });
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [notifications, setNotifications] = useState(true);
   const [autoSync, setAutoSync] = useState(true);
 
+  useEffect(() => {
+    loadUserData();
+  }, []);
+
+  const loadUserData = async () => {
+    try {
+      setLoading(true);
+      const userData = await apiService.getCurrentUser();
+      setUser(userData);
+    } catch (error) {
+      console.error('Error loading user data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div style={{ background: theme.colors.background, minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <div style={{ color: theme.colors.text, fontSize: 18 }}>Chargement...</div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div style={{ background: theme.colors.background, minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <div style={{ color: theme.colors.error, fontSize: 18 }}>Erreur lors du chargement du profil</div>
+      </div>
+    );
+  }
+
   // Initiales pour avatar
   const initials = user.prenom[0] + user.nom[0];
+  const storesList = user.stores ? user.stores.map(store => store.code).join(', ') : 'Aucun magasin assigné';
 
   return (
     <div style={{ background: theme.colors.background, minHeight: '100vh', paddingBottom: 40 }}>
@@ -56,15 +86,15 @@ export default function Profil() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'flex-start', margin: '0 auto', maxWidth: 260, textAlign: 'left', background: '#f8fafc', borderRadius: 10, padding: '18px 18px 12px 18px', boxShadow: '0 1px 4px #6c4ccf11' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: theme.colors.textSecondary, fontSize: 15 }}><MailIcon /><span>{user.email}</span></div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: theme.colors.textSecondary, fontSize: 15 }}><PhoneIcon /><span>{user.telephone}</span></div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: theme.colors.textSecondary, fontSize: 15 }}><StoreIcon /><span>Magasins : {user.magasins.join(', ')}</span></div>
-                <div style={{ color: theme.colors.textSecondary, fontSize: 13, marginTop: 2, marginLeft: 28 }}>Inscrit le {new Date(user.inscription).toLocaleDateString('fr-FR')}</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: theme.colors.textSecondary, fontSize: 15 }}><StoreIcon /><span>Magasins : {storesList}</span></div>
+                <div style={{ color: theme.colors.textSecondary, fontSize: 13, marginTop: 2, marginLeft: 28 }}>Inscrit le {new Date(user.createdAt).toLocaleDateString('fr-FR')}</div>
               </div>
               <button style={{ marginTop: 22, background: '#6c4ccf', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 18px', fontWeight: 600, fontSize: 15, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 8, boxShadow: '0 2px 8px #6c4ccf22' }}><EditIcon />Modifier le profil</button>
             </div>
             {/* Section à propos */}
             <div className="card-3d" style={{ background: theme.colors.surface, border: `1px solid ${theme.colors.border}`, borderRadius: 16, padding: 24, marginBottom: 24 }}>
               <h2 style={{ color: theme.colors.primary, fontSize: 18, marginBottom: 10 }}>À propos</h2>
-              <div style={{ color: theme.colors.textSecondary, fontSize: 15 }}>{user.description}</div>
+              <div style={{ color: theme.colors.textSecondary, fontSize: 15 }}>{user.description || 'Aucune description disponible'}</div>
             </div>
           </div>
           {/* Colonne droite : paramètres et sécurité */}

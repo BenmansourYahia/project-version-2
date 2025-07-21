@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import apiService from '../services/api';
 
 // Icônes sociales SVG (remplacement FontAwesome)
 const FacebookIcon = () => (
@@ -25,12 +26,17 @@ export default function Login({ onLogin }) {
   // Login handler
   const handleLogin = (e) => {
     e.preventDefault();
-    if (loginEmail === 'admin' && loginPassword === 'admin') {
-      setLoginError('');
-      onLogin();
-    } else {
-      setLoginError('Identifiants incorrects');
-    }
+    setLoginError('');
+    
+    apiService.login(loginEmail, loginPassword)
+      .then(response => {
+        console.log('Login successful:', response);
+        onLogin();
+      })
+      .catch(error => {
+        console.error('Login failed:', error);
+        setLoginError('Identifiants incorrects');
+      });
   };
 
   // Signup handler (simulation)
@@ -69,6 +75,9 @@ export default function Login({ onLogin }) {
           <input type="text" placeholder="Nom d'utilisateur" value={loginEmail} onChange={e => setLoginEmail(e.target.value)} />
           <input type="password" placeholder="Mot de passe" value={loginPassword} onChange={e => setLoginPassword(e.target.value)} />
           <a href="#" style={{ color: '#4333c0', fontSize: 13, margin: '8px 0' }}>Mot de passe oublié ?</a>
+          <div style={{ fontSize: 12, color: '#666', margin: '8px 0', textAlign: 'center' }}>
+            Utilisez: admin@sofisoft.com / admin ou jean.dupont@store.com / password
+          </div>
           {loginError && <div style={{ color: '#EF4444', fontWeight: 500, fontSize: 14 }}>{loginError}</div>}
           <button type="submit">Se connecter</button>
         </form>

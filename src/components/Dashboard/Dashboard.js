@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { useEffect } from 'react';
 import { useTheme } from '../../hooks/useTheme';
-import { mockKPIs, brands, salesEvolutionData, mockStores, mockPerformances } from '../../data/mockData';
+import apiService from '../../services/api';
 import KPICard from '../KPICard';
 import ChartCardRecharts from '../ChartCardRecharts';
 import FilterModal from '../FilterModal';
@@ -50,6 +51,10 @@ function generatePeriodData(baseValue, baseTickets, period, monthIdx = 0, trimes
 
 export default function Dashboard() {
   const { theme } = useTheme();
+  const [stores, setStores] = useState([]);
+  const [brands, setBrands] = useState([]);
+  const [performances, setPerformances] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedPeriod, setSelectedPeriod] = useState('Aujourd\'hui');
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [showBrandFilter, setShowBrandFilter] = useState(false);
@@ -59,10 +64,32 @@ export default function Dashboard() {
 
   const periods = ['Aujourd\'hui', 'Cette semaine', 'Ce mois', 'Trimestre', 'Cette année'];
 
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      const [storesData, brandsData, performancesData] = await Promise.all([
+        apiService.getStores(),
+        apiService.getBrands(),
+        apiService.getPerformances()
+      ]);
+      setStores(storesData);
+      setBrands(brandsData);
+      setPerformances(performancesData);
+    } catch (error) {
+      console.error('Error loading dashboard data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Filtrer les magasins selon la marque sélectionnée
   const filteredStores = selectedBrands.length > 0
-    ? mockStores.filter(store => selectedBrands.includes(store.brand))
-    : mockStores;
+    ? stores.filter(store => selectedBrands.includes(store.brand))
+    : stores;
 
   // Magasin sélectionné ou tous
   const selectedStore = selectedStoreId === 'ALL' ? null : filteredStores.find(store => store.id === selectedStoreId);
@@ -72,11 +99,13 @@ export default function Dashboard() {
     const perf = { ca: 0, tickets: 0, panierMoyen: 0, objectif: 0, objectifAtteint: 0 };
     if (stores.length === 0) return perf;
     stores.forEach(store => {
-      perf.ca += store.performance.ca;
-      perf.tickets += store.performance.tickets;
-      perf.panierMoyen += store.performance.panierMoyen;
-      perf.objectif += store.performance.objectif;
-      perf.objectifAtteint += store.performance.objectifAtteint;
+      if (store.performance) {
+        perf.ca += Number(store.performance.ca) || 0;
+        perf.tickets += Number(store.performance.tickets) || 0;
+        perf.panierMoyen += Number(store.performance.panierMoyen) || 0;
+        perf.objectif += Number(store.performance.objectif) || 0;
+        perf.objectifAtteint += Number(store.performance.objectifAtteint) || 0;
+      }
     });
     perf.panierMoyen = perf.panierMoyen / stores.length;
     perf.objectifAtteint = perf.objectifAtteint / stores.length;
@@ -89,14 +118,14 @@ export default function Dashboard() {
   let storeSalesEvolution;
   if (selectedStore) {
     storeSalesEvolution = generatePeriodData(
-      selectedStore.performance.ca,
-      selectedStore.performance.tickets,
+      Number(selectedStore.performance?.ca) || 0,
+      Number(selectedStore.performance?.tickets) || 0,
       selectedPeriod
     );
   } else {
     // Agréger les données pour tous les magasins filtrés
-    const baseValue = filteredStores.reduce((sum, s) => sum + s.performance.ca, 0) / (filteredStores.length || 1);
-    const baseTickets = filteredStores.reduce((sum, s) => sum + s.performance.tickets, 0) / (filteredStores.length || 1);
+    const baseValue = filteredStores.reduce((sum, s) => sum + (Number(s.performance?.ca) || 0), 0) / (filteredStores.length || 1);
+    const baseTickets = filteredStores.reduce((sum, s) => sum + (Number(s.performance?.tickets) || 0), 0) / (filteredStores.length || 1);
     storeSalesEvolution = generatePeriodData(baseValue, baseTickets, selectedPeriod);
   }
 
@@ -125,7 +154,7 @@ export default function Dashboard() {
   if (filteredStores.length > 0) {
     // Pour chaque magasin, calculer la somme des ventes sur la période affichée
     const storeSums = filteredStores.map(store => {
-      const data = generatePeriodData(store.performance.ca, store.performance.tickets, selectedPeriod);
+      const data = generatePeriodData(Number(store.performance?.ca) || 0, Number(store.performance?.tickets) || 0, selectedPeriod);
       const total = data.reduce((sum, d) => sum + d.value, 0);
       return { store, total };
     });
@@ -141,20 +170,21 @@ export default function Dashboard() {
   // Agrégation des KPIs avancés (prix moyen, débit moyen, taux transformation, quantité vendue)
   let prixMoyen = null, debitMoyen = null, tauxTransformation = null, quantiteVendue = null;
   if (selectedStore) {
-    // On cherche la perf du magasin sélectionné dans mockPerformances
-    const perfAvancee = mockPerformances.find(p => p.magasin === selectedStore.code);
-    prixMoyen = perfAvancee ? perfAvancee.prixMoyen : null;
-    debitMoyen = perfAvancee ? perfAvancee.debitMoyen : null;
-    tauxTransformation = perfAvancee ? perfAvancee.tauxTransformation : null;
-    quantiteVendue = perfAvancee ? perfAvancee.quantiteVendue : null;
+    // On utilise les données de performance du magasin sélectionné
+    if (selectedStore.performance) {
+      prixMoyen = Number(selectedStore.performance.prixMoyen) || null;
+      debitMoyen = Number(selectedStore.performance.debitMoyen) || null;
+      tauxTransformation = Number(selectedStore.performance.tauxTransformation) || null;
+      quantiteVendue = Number(selectedStore.performance.quantiteVendue) || null;
+    }
   } else {
     // Moyenne sur tous les magasins filtrés
-    const perfs = mockPerformances.filter(p => filteredStores.some(s => s.code === p.magasin));
-    if (perfs.length > 0) {
-      prixMoyen = perfs.reduce((sum, p) => sum + (p.prixMoyen || 0), 0) / perfs.length;
-      debitMoyen = perfs.reduce((sum, p) => sum + (p.debitMoyen || 0), 0) / perfs.length;
-      tauxTransformation = perfs.reduce((sum, p) => sum + (p.tauxTransformation || 0), 0) / perfs.length;
-      quantiteVendue = perfs.reduce((sum, p) => sum + (p.quantiteVendue || 0), 0);
+    const validPerfs = filteredStores.filter(s => s.performance);
+    if (validPerfs.length > 0) {
+      prixMoyen = validPerfs.reduce((sum, s) => sum + (Number(s.performance.prixMoyen) || 0), 0) / validPerfs.length;
+      debitMoyen = validPerfs.reduce((sum, s) => sum + (Number(s.performance.debitMoyen) || 0), 0) / validPerfs.length;
+      tauxTransformation = validPerfs.reduce((sum, s) => sum + (Number(s.performance.tauxTransformation) || 0), 0) / validPerfs.length;
+      quantiteVendue = validPerfs.reduce((sum, s) => sum + (Number(s.performance.quantiteVendue) || 0), 0);
     }
   }
 
@@ -233,6 +263,14 @@ export default function Dashboard() {
       color: '#10B981'
     }
   ];
+
+  if (loading) {
+    return (
+      <div style={{ background: theme.colors.background, minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <div style={{ color: theme.colors.text, fontSize: 18 }}>Chargement du dashboard...</div>
+      </div>
+    );
+  }
 
   // Fonction d'export PDF
   const handleExportPDF = async () => {
